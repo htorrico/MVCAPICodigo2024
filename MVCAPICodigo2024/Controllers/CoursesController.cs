@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVCAPICodigo2024.Models.Request;
 using MVCAPICodigo2024.Models.Response;
+using System.Text;
 using System.Text.Json;
 
 namespace MVCAPICodigo2024.Controllers
@@ -36,6 +38,42 @@ namespace MVCAPICodigo2024.Controllers
             }
 
             return Json(model);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateAsync(string name)
+        {
+
+            try
+            {
+                CourseRequestV1 request = new CourseRequestV1 { Name = name };
+                using HttpClient client = new HttpClient();
+                
+                string jsonRequest = JsonSerializer.Serialize(request);
+
+                HttpContent content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Response: " + jsonResponse);
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                }
+
+
+                return Json(new { message = "Escuela registrada Correctamente" });
+            }
+            catch (Exception)
+            {
+
+                return Json(new { message = "Error, comunicarse con el adminstrador" });
+            }
+
         }
     }
 }

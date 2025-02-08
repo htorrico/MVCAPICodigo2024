@@ -4,7 +4,7 @@
 }
 
 <h2>Lista de Cursos</h2>
-
+<button id="createSchoolButton" class="btn btn-success">Crear Escuela</button>
 <button id="listCoursesButton" class="btn btn-primary">Listar Cursos</button>
 <input type="text" id="txtFilter" />
 <table class="table">
@@ -18,10 +18,73 @@
     <tbody>        
     </tbody>
 </table>
+
+<!-- Modal para crear estudiante -->
+<div class="modal fade" id="createSchoolModal" tabindex="-1" role="dialog" aria-labelledby="createSchoolLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createStudentLabel">Crear Escuela</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- El contenido del modal se carga aquí -->
+                <div>
+                    <form id="createSchoolForm">
+                        <div class="form-group">
+                            <label for="Name">Nombre</label>
+                            <input type="text" id="name" name="name" class="form-control" />
+                        </div>
+                        <br />
+                        <button type="button" id="saveSchoolButton" class="btn btn-success">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-      
+
+        $('#createSchoolButton').click(function () {
+
+            $('#createSchoolModal').modal('show');
+        });
+
+        $('#saveSchoolButton').click(function () {
+            
+            $.ajax({
+                type: "POST",
+                url: "/Courses/Create",
+                data: {
+                    name: $("#name").val()
+                },
+                success: function (response) {
+
+
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    $('#createSchoolModal').modal('hide');
+                    GetSchools();
+
+                },
+                error: function () {
+                    alert('Hubo un error al enviar el formulario.');
+                }
+            });
+
+
+        });
+
+
+
+
         $('#listCoursesButton').click(function () {
             var filter = $("#txtFilter").val();
            
