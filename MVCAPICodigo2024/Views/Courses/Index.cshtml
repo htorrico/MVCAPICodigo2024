@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Lista de Cursos</h2>
+
+<button id="listCoursesButton" class="btn btn-primary">Listar Cursos</button>
+<input type="text" id="txtFilter" />
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Credit</th>
+        </tr>
+    </thead>
+    <tbody>        
+    </tbody>
+</table>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+      
+        $('#listCoursesButton').click(function () {
+            var filter = $("#txtFilter").val();
+           
+            $.ajax({
+                type: "GET",                
+                url: "/Courses/Get?filter=" + filter,
+                success: function (result) {                   
+                    var tableBody = $('table tbody');
+                    tableBody.empty(); // Vaciar la tabla
+
+                    result.forEach(function (course) {
+                        var newRow = `
+                                            <tr>
+                                                    <td>${course.courseID}</td>
+                                                    <td>${course.name}</td>
+                                                    <td>${course.credit}</td>
+                                            </tr>`;
+                        tableBody.append(newRow);
+                    });
+                },
+                error: function () {
+                    alert('Hubo un error al listar los estudiantes.');
+                }
+            });
+
+        });
+    
+    });
+</script>
